@@ -4,12 +4,16 @@ use crate::wireworld::*;
 use nannou::prelude::*;
 
 struct Model {
-    grid: wireworld::Grid
+    grid: wireworld::Grid,
+    update_last_millis: u128,
+    update_every_millis: u128,
 }
 
 fn model(_app: &App) -> Model {
     let mut model = Model {
-        grid: wireworld::Grid::new(50,50)
+        grid: wireworld::Grid::new(50,50),
+        update_last_millis: 0,
+        update_every_millis: 100,
     };
 
     for x in 0..model.grid.get_width() {
@@ -49,6 +53,12 @@ fn event(app: &App, model: &mut Model, event: Event) {
                 }
             }
             _ => { }
+        }
+    }else if let Event::Update(update_event) = event {
+        if update_event.since_start.as_millis() - model.update_last_millis > model.update_every_millis
+        {
+            model.update_last_millis = update_event.since_start.as_millis();
+            model.grid.tick();
         }
     }
 }

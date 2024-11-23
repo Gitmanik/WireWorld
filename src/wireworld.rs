@@ -71,7 +71,7 @@ impl Grid {
         }
         count
     }
-    
+
     pub fn tick(&mut self) {
 
         let mut new_cells = self.cells.clone();
