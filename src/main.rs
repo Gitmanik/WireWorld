@@ -8,9 +8,23 @@ struct Model {
 }
 
 fn model(_app: &App) -> Model {
-    Model {
+    let mut model = Model {
         grid: wireworld::Grid::new(50,50)
+    };
+
+    for x in 0..model.grid.get_width() {
+        for y in 0..model.grid.get_height() {
+            if x % 2 == y % 2 {
+                model.grid.set_cell(x,y, CellState::Conductor);
+            }
+        }
     }
+
+    model.grid.set_cell(1,1,CellState::Head);
+
+    model.grid.pretty_print();
+
+    model
 }
 
 fn main() {
