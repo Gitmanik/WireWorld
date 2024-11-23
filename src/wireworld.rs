@@ -20,12 +20,12 @@ impl fmt::Display for CellState {
 }
 pub struct Grid {
     cells: Vec<CellState>,
-    width: usize,
-    height: usize,
+    width: u32,
+    height: u32,
 }
 
 impl Grid {
-    pub fn new(width: usize, height: usize) -> Self {
+    pub fn new(width: u32, height: u32) -> Self {
         Grid {
             cells: vec![CellState::Empty; (width * height) as usize],
             width: width,
@@ -41,15 +41,15 @@ impl Grid {
             println!();
         }
     }
-    pub fn get_width(&self) -> usize {self.width}
-    pub fn get_height(&self) -> usize {self.height}
-    pub fn get_cell(&self, x: usize, y: usize) -> &CellState { &self.cells[self.idx(x, y)] }
-    pub fn set_cell(&mut self, x: usize, y: usize, new_val: CellState) {
+    pub fn get_width(&self) -> u32 {self.width}
+    pub fn get_height(&self) -> u32 {self.height}
+    pub fn get_cell(&self, x: u32, y: u32) -> &CellState { &self.cells[self.idx(x, y) as usize] }
+    pub fn set_cell(&mut self, x: u32, y: u32, new_val: CellState) {
 
         assert!(x < self.width && y < self.height);
 
         let idx = self.idx(x, y);
         self.cells[idx] = new_val;
     }
-    fn idx(&self, x: usize, y: usize) -> usize { y * self.width + x }
+    fn idx(&self, x: u32, y: u32) -> usize { (y * self.width + x) as usize}
 }
