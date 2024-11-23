@@ -21,27 +21,36 @@ impl fmt::Display for CellState {
         }
     }
 }
+struct Grid {
+    cells: Vec<CellState>,
+    width: usize,
+    height: usize,
+}
 
-const GRID_HEIGHT:usize = 10;
-const GRID_WIDTH:usize = 30;
-
-fn print_grid(grid: &Vec<CellState>, width: usize, height: usize)
-{
-    for h in 0..height {
-        for w in 0..width {
-            print!("{}", grid[h*height + w]);
+impl Grid {
+    fn new(width: usize, height: usize) -> Self {
+        Grid {
+            cells: vec![CellState::Empty; (width * height) as usize],
+            width: width,
+            height: height,
         }
-        println!();
+    }
+    fn pretty_print(&self)
+    {
+        for h in 0..self.height {
+            for w in 0..self.width {
+                print!("{}", self.cells[h*self.height + w]);
+            }
+            println!();
+        }
     }
 }
 
 fn main() {
     println!("WireWorld - Paweł Reich s193682 2024");
 
-    let grid = vec![CellState::Empty; (GRID_HEIGHT * GRID_WIDTH) as usize];
-
-    print_grid(&grid, GRID_WIDTH, GRID_HEIGHT);
-
+    let grid = Grid::new(30,10);
+    grid.pretty_print();
 }
 fn view(app: &App, frame: Frame) {
     // get canvas to draw on
