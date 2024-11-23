@@ -43,7 +43,27 @@ fn event(app: &App, model: &mut Model, event: Event) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
 
-    draw.background().color(BLUE);
+    draw.background().color(BLACK);
+
+    for y in 0..model.grid.get_height() {
+        for x in 0..model.grid.get_width() {
+            let color: Srgb<u8>;
+            match model.grid.get_cell(x,y) {
+                CellState::Empty => color = BLACK,
+                CellState::Head => color = RED,
+                CellState::Tail => color = BLUE,
+                CellState::Conductor => color = YELLOW,
+            }
+
+            let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
+            let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
+
+            let cell_x = app.window_rect().left() + cell_width * x as f32 + cell_width/2.0;
+            let cell_y = app.window_rect().top() - cell_height * (y+1) as f32 + cell_height/2.0;
+
+            draw.rect().color(color).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+        }
+    }
 
     draw.to_frame(app, &frame).unwrap();
 }
