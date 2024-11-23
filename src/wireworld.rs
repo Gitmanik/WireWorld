@@ -71,4 +71,33 @@ impl Grid {
         }
         count
     }
+    
+    pub fn tick(&mut self) {
+
+        let mut new_cells = self.cells.clone();
+
+        for x in 0..self.width {
+            for y in 0..self.height {
+                let mut cell = self.get_cell(x, y);
+                match cell
+                {
+                    CellState::Empty => {}
+                    CellState::Head => {
+                        cell = CellState::Tail;
+                    }
+                    CellState::Tail => {
+                        cell = CellState::Conductor;
+                    }
+                    CellState::Conductor => {
+                        let head_count = self.count_neighbours(CellState::Head, x, y);
+                        if head_count == 1 || head_count == 2 {
+                            cell = CellState::Head;
+                        }
+                    }
+                }
+                new_cells[self.idx(x, y)] = cell;
+            }
+        }
+        self.cells = new_cells;
+    }
 }
