@@ -37,7 +37,22 @@ fn main() {
         .run();
 }
 fn event(app: &App, model: &mut Model, event: Event) {
+    if let Event::WindowEvent {id: _, simple: window_event } = event {
+        if window_event.is_none() { return }
+        let window_event_unwrapped = window_event.unwrap();
+        match window_event_unwrapped {
+            WindowEvent::MousePressed(button) =>
+            {
+                if button == MouseButton::Left {
+                    let mouse_grid_pos = mouse_to_grid(&app, &model);
+                    model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, CellState::Conductor);
+                }
+            }
+            _ => { }
+        }
+    }
 }
+
 fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32)
 {
     let mut mouse_pos = app.mouse.position();
@@ -54,6 +69,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
 
     draw.background().color(BLACK);
+
+    let mouse_grid_pos = mouse_to_grid(&app, &model);
 
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {
@@ -72,6 +89,11 @@ fn view(app: &App, model: &Model, frame: Frame) {
             let cell_y = app.window_rect().top() - cell_height * (y+1) as f32 + cell_height/2.0;
 
             draw.rect().color(color).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+
+
+            if mouse_grid_pos.0 == x as u32 && mouse_grid_pos.1 == y as u32 {
+                draw.rect().no_fill().stroke(WHITE).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+            }
         }
     }
 
