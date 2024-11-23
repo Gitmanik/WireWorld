@@ -1,7 +1,7 @@
 use core::fmt;
 
 #[derive(Clone)]
-enum CellState {
+pub enum CellState {
     Empty,
     Head,
     Tail,
