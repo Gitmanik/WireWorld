@@ -1,6 +1,6 @@
 use core::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum CellState {
     Empty,
     Head,
@@ -58,4 +58,17 @@ impl Grid {
         self.cells[idx] = new_val;
     }
     fn idx(&self, x: u32, y: u32) -> usize { (y * self.width + x) as usize}
+
+    fn count_neighbours(&self, looking_for: CellState, x: u32, y: u32) -> u32
+    {
+        let mut count: u32 = 0;
+        for x_test in x-1..=x+1 {
+            for y_test in y-1..=y+1 {
+                if self.get_cell(x_test, y_test) == looking_for {
+                    count +=1;
+                }
+            }
+        }
+        count
+    }
 }
