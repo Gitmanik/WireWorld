@@ -42,5 +42,12 @@ impl Grid {
         }
     }
     pub fn get_cell(&self, x: usize, y: usize) -> &CellState { &self.cells[self.idx(x, y)] }
-    fn idx(&self, x: usize, y: usize) -> usize { y * self.height + x }
+    pub fn set_cell(&mut self, x: usize, y: usize, new_val: CellState) {
+
+        assert!(x < self.width && y < self.height);
+
+        let idx = self.idx(x, y);
+        self.cells[idx] = new_val;
+    }
+    fn idx(&self, x: usize, y: usize) -> usize { y * self.width + x }
 }
