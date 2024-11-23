@@ -43,7 +43,9 @@ impl Grid {
     }
     pub fn get_width(&self) -> u32 {self.width}
     pub fn get_height(&self) -> u32 {self.height}
-    pub fn get_cell(&self, x: u32, y: u32) -> &CellState { &self.cells[self.idx(x, y) as usize] }
+    pub fn get_cell(&self, x: u32, y: u32) -> CellState {
+        self.cells[self.idx(x, y) as usize].clone()
+    }
     pub fn set_cell(&mut self, x: u32, y: u32, new_val: CellState) {
 
         assert!(x < self.width && y < self.height);
