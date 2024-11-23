@@ -37,13 +37,15 @@ impl Grid {
     }
     fn pretty_print(&self)
     {
-        for h in 0..self.height {
-            for w in 0..self.width {
-                print!("{}", self.cells[h*self.height + w]);
+        for y in 0..self.height {
+            for x in 0..self.width {
+                print!("{}", self.get_cell(x,y));
             }
             println!();
         }
     }
+    fn get_cell(&self, x: usize, y: usize) -> &CellState { &self.cells[self.idx(x, y)] }
+    fn idx(&self, x: usize, y: usize) -> usize { y * self.height + x }
 }
 
 fn main() {
