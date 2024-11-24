@@ -70,8 +70,6 @@ fn event(app: &App, model: &mut Model, event: Event) {
                 }
             }
             WindowEvent::DroppedFile(path) => {
-                println!("dropped file {:?}", path);
-
                 let new_grid = wireworld::Grid::from_file(path.to_str().unwrap());
                 if new_grid.is_ok() {
                     model.grid = new_grid.unwrap();

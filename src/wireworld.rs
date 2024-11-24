@@ -35,6 +35,8 @@ impl Grid {
     }
 
     pub fn from_file(file_path: &str) -> Result<Grid, &str> {
+
+        println!("Loading from from file: {}", file_path);
         let content = fs::read_to_string(file_path);
         if content.is_err() {
             eprintln!("Could not read file: {}", file_path);
@@ -69,7 +71,7 @@ impl Grid {
             height += 1;
         }
 
-        println!("Finished loading {}x{} grid from {}", width, height, file_path);
+        println!("Finished loading {}x{} grid from file {}", width, height, file_path);
         
         Ok(Grid {
             cells: cells,
@@ -80,6 +82,7 @@ impl Grid {
 
     pub fn to_file(&self, file_path: &str) -> std::io::Result<()>
     {
+        println!("Saving Grid to file: {}", file_path);
         let data:String = self.serialize();
         fs::write(file_path, data)
     }
