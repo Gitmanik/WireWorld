@@ -95,7 +95,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {
 
-            let color: Srgb<u8> = cell_to_color(model.grid.get_cell(x, y));
+            let color: Srgb<u8> = cell_to_color(model.grid.get_cell(x as i32, y as i32));
 
             let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
             let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
