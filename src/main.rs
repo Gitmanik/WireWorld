@@ -11,7 +11,6 @@ struct Model {
 }
 
 fn model(app: &App) -> Model {
-
     app.new_window()
         .title("WireWorld")
         .size(1024, 1024)
@@ -97,8 +96,7 @@ fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32) {
     (clicked_x, clicked_y)
 }
 
-fn cell_to_color(cell: CellState) -> Srgb<u8>
-{
+fn cell_to_color(cell: CellState) -> Srgb<u8> {
     match cell {
         CellState::Empty => BLACK,
         CellState::Head => BLUE,
