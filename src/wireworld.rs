@@ -1,5 +1,6 @@
 use core::fmt;
 use std::fs;
+use nannou::color::{Srgb, BLACK, BLUE, RED, YELLOW};
 
 #[derive(Clone, PartialEq)]
 pub enum CellState {
@@ -162,5 +163,14 @@ impl Grid {
             }
         }
         self.cells = new_cells;
+    }
+
+    pub fn cell_to_color(cell: &CellState) -> Srgb<u8> {
+        match cell {
+            CellState::Empty => BLACK,
+            CellState::Head => BLUE,
+            CellState::Tail => RED,
+            CellState::Conductor => YELLOW,
+        }
     }
 }

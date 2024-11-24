@@ -40,6 +40,7 @@ fn main() {
         .event(event)
         .run();
 }
+
 fn event(app: &App, model: &mut Model, event: Event) {
     if let Event::WindowEvent {id: _, simple: window_event } = event {
         if window_event.is_none() { return }
@@ -96,14 +97,6 @@ fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32) {
     (clicked_x, clicked_y)
 }
 
-fn cell_to_color(cell: &CellState) -> Srgb<u8> {
-    match cell {
-        CellState::Empty => BLACK,
-        CellState::Head => BLUE,
-        CellState::Tail => RED,
-        CellState::Conductor => YELLOW,
-    }
-}
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
 
@@ -114,7 +107,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {
 
-            let color: Srgb<u8> = cell_to_color(model.grid.get_cell(x as i32, y as i32));
+            let color: Srgb<u8> = Grid::cell_to_color(model.grid.get_cell(x as i32, y as i32));
 
             let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
             let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
@@ -126,7 +119,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
             if mouse_grid_pos.0 == x && mouse_grid_pos.1 == y {
 
-                draw.rect().no_fill().stroke(cell_to_color(&model.paint_current)).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+                draw.rect().no_fill().stroke(Grid::cell_to_color(&model.paint_current)).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
             }
         }
     }
