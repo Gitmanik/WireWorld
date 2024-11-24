@@ -10,21 +10,11 @@ struct Model {
 }
 
 fn model(_app: &App) -> Model {
-    let mut model = Model {
-        grid: wireworld::Grid::new(50,50),
+    let model = Model {
+        grid: wireworld::Grid::from_file("grid.txt"),
         update_last_millis: 0,
         update_every_millis: 100,
     };
-
-    for x in 0..model.grid.get_width() {
-        for y in 0..model.grid.get_height() {
-            if x % 2 == y % 2 {
-                model.grid.set_cell(x,y, CellState::Conductor);
-            }
-        }
-    }
-
-    model.grid.set_cell(1,1,CellState::Head);
 
     model.grid.pretty_print();
 

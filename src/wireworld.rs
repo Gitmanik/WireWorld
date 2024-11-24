@@ -1,4 +1,5 @@
 use core::fmt;
+use std::fs;
 
 #[derive(Clone, PartialEq)]
 pub enum CellState {
@@ -32,6 +33,50 @@ impl Grid {
             height: height,
         }
     }
+
+    pub fn from_file(file_path: &str) -> Self {
+        let content = fs::read_to_string(file_path);
+        if content.is_err() {
+            eprintln!("Could not read file: {}", file_path);
+            return Self::new(10,10);
+        }
+
+        let content = content.unwrap();
+        let lines = content.split('\n');
+
+        let mut cells: Vec<CellState> = Vec::new();
+        let mut width :i32 = -1;
+        let mut height :u32 = 0;
+
+        for line in lines {
+            let mut new_width = 0;
+            for c in line.chars() {
+                match c {
+                    '.' => cells.push(CellState::Empty),
+                    '>' => cells.push(CellState::Head),
+                    '<' => cells.push(CellState::Tail),
+                    '-' => cells.push(CellState::Conductor),
+                    _ => { continue; }
+                }
+
+                new_width += 1;
+            }
+            if width != -1 && new_width != width {
+                eprintln!("File {} is malformed.", file_path);
+                return Self::new(10,10);
+            }
+            width = new_width;
+            height += 1;
+        }
+
+
+        Grid {
+            cells: cells,
+            width: width as u32,
+            height: height,
+        }
+    }
+
     pub fn pretty_print(&self) {
         for y in 0..self.height {
             for x in 0..self.width {
