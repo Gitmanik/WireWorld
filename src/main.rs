@@ -96,8 +96,8 @@ fn cell_to_color(cell: CellState) -> Srgb<u8>
 {
     match cell {
         CellState::Empty => BLACK,
-        CellState::Head => RED,
-        CellState::Tail => BLUE,
+        CellState::Head => BLUE,
+        CellState::Tail => RED,
         CellState::Conductor => YELLOW,
     }
 }
