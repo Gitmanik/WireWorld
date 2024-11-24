@@ -7,6 +7,7 @@ struct Model {
     grid: wireworld::Grid,
     update_last_millis: u128,
     update_every_millis: u128,
+    paint_current: CellState,
 }
 
 fn model(_app: &App) -> Model {
@@ -14,6 +15,7 @@ fn model(_app: &App) -> Model {
         grid: wireworld::Grid::from_file("grid.txt"),
         update_last_millis: 0,
         update_every_millis: 100,
+        paint_current: CellState::Conductor,
     };
 
     model.grid.pretty_print();
@@ -39,12 +41,22 @@ fn event(app: &App, model: &mut Model, event: Event) {
             {
                 if app.mouse.buttons.left().is_down(){
                     let mouse_grid_pos = mouse_to_grid(&app, &model);
-                    model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, CellState::Conductor);
+                    model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
                 }
             }
             _ => { }
+            WindowEvent::KeyReleased(_key) =>
+            {
+                match _key {
+                    Key::Z => model.paint_current = CellState::Conductor,
+                    Key::X => model.paint_current = CellState::Head,
+                    Key::C => model.paint_current = CellState::Tail,
+                    Key::V => model.paint_current = CellState::Empty,
+                    _ => {}
+                }
+            }
         }
-    }else if let Event::Update(update_event) = event {
+    } else if let Event::Update(update_event) = event {
         if update_event.since_start.as_millis() - model.update_last_millis > model.update_every_millis
         {
             model.update_last_millis = update_event.since_start.as_millis();
@@ -64,6 +76,15 @@ fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32) {
     (clicked_x, clicked_y)
 }
 
+fn cell_to_color(cell: CellState) -> Srgb<u8>
+{
+    match cell {
+        CellState::Empty => BLACK,
+        CellState::Head => RED,
+        CellState::Tail => BLUE,
+        CellState::Conductor => YELLOW,
+    }
+}
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
 
@@ -73,13 +94,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {
-            let color: Srgb<u8>;
-            match model.grid.get_cell(x,y) {
-                CellState::Empty => color = BLACK,
-                CellState::Head => color = RED,
-                CellState::Tail => color = BLUE,
-                CellState::Conductor => color = YELLOW,
-            }
+
+            let color: Srgb<u8> = cell_to_color(model.grid.get_cell(x, y));
 
             let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
             let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
@@ -89,9 +105,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
             draw.rect().color(color).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
 
+            if mouse_grid_pos.0 == x && mouse_grid_pos.1 == y {
 
-            if mouse_grid_pos.0 == x as u32 && mouse_grid_pos.1 == y as u32 {
-                draw.rect().no_fill().stroke(WHITE).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+                draw.rect().no_fill().stroke(cell_to_color(model.paint_current.clone())).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
             }
         }
     }
