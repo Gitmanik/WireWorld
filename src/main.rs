@@ -11,16 +11,12 @@ struct Model {
 }
 
 fn model(_app: &App) -> Model {
-    let model = Model {
+    Model {
         grid: wireworld::Grid::from_file("grid.txt"),
         update_last_millis: 0,
         update_every_millis: 100,
         paint_current: CellState::Conductor,
-    };
-
-    model.grid.pretty_print();
-
-    model
+        }
 }
 
 fn main() {
