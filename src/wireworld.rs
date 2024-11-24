@@ -69,6 +69,8 @@ impl Grid {
             height += 1;
         }
 
+        println!("Finished loading {}x{} grid from {}", width, height, file_path);
+        
         Ok(Grid {
             cells: cells,
             width: width as u32,
