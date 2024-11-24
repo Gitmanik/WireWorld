@@ -48,13 +48,13 @@ fn event(app: &App, model: &mut Model, event: Event) {
         match window_event_unwrapped {
             WindowEvent::MousePressed(MouseButton::Left) => {
                 let mouse_grid_pos = mouse_to_grid(app, model);
-                model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
+                model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, &model.paint_current);
             }
             WindowEvent::MouseMoved(_) =>
             {
                 if app.mouse.buttons.left().is_down(){
                     let mouse_grid_pos = mouse_to_grid(app, model);
-                    model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
+                    model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, &model.paint_current);
                 }
             }
             WindowEvent::KeyReleased(_key) =>

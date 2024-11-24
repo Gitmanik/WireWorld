@@ -113,14 +113,14 @@ impl Grid {
 
         &self.cells[self.idx(x as u32, y as u32)]
     }
-    pub fn set_cell(&mut self, x: u32, y: u32, new_val: CellState) {
+    pub fn set_cell(&mut self, x: u32, y: u32, new_val: &CellState) {
 
         if x >= self.width || y >= self.height{
             return;
         }
 
         let idx = self.idx(x, y);
-        self.cells[idx] = new_val;
+        self.cells[idx] = new_val.clone();
     }
     fn idx(&self, x: u32, y: u32) -> usize { (y * self.width + x) as usize }
 
