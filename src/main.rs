@@ -53,8 +53,8 @@ fn event(app: &App, model: &mut Model, event: Event) {
             WindowEvent::KeyReleased(_key) =>
             {
                 match _key {
-                    Key::S => model.grid.pretty_print(),
-
+                    Key::S => model.grid.to_file("current.txt").unwrap_or(()),
+                    Key::P => model.grid.pretty_print(),
                     Key::Z => model.paint_current = CellState::Conductor,
                     Key::X => model.paint_current = CellState::Head,
                     Key::C => model.paint_current = CellState::Tail,
