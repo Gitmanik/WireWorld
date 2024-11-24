@@ -63,8 +63,7 @@ fn event(app: &App, model: &mut Model, event: Event) {
     }
 }
 
-fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32)
-{
+fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32) {
     let mut mouse_pos = app.mouse.position();
     mouse_pos.x = map_range(mouse_pos.x, app.window_rect().left(), app.window_rect().right(), 0.0, model.grid.get_width() as f32);
     mouse_pos.y = map_range(mouse_pos.y, app.window_rect().top(), app.window_rect().bottom(), 0.0, model.grid.get_height() as f32);

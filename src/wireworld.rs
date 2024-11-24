@@ -32,8 +32,7 @@ impl Grid {
             height: height,
         }
     }
-    pub fn pretty_print(&self)
-    {
+    pub fn pretty_print(&self) {
         for y in 0..self.height {
             for x in 0..self.width {
                 print!("{}", self.get_cell(x,y));
@@ -41,8 +40,8 @@ impl Grid {
             println!();
         }
     }
-    pub fn get_width(&self) -> u32 {self.width}
-    pub fn get_height(&self) -> u32 {self.height}
+    pub fn get_width(&self) -> u32 { self.width }
+    pub fn get_height(&self) -> u32 { self.height }
     pub fn get_cell(&self, x: u32, y: u32) -> CellState {
         if x >= self.width || y >= self.height {
             return CellState::Empty;
@@ -59,10 +58,9 @@ impl Grid {
         let idx = self.idx(x, y);
         self.cells[idx] = new_val;
     }
-    fn idx(&self, x: u32, y: u32) -> usize { (y * self.width + x) as usize}
+    fn idx(&self, x: u32, y: u32) -> usize { (y * self.width + x) as usize }
 
-    fn count_neighbours(&self, looking_for: CellState, x: u32, y: u32) -> u32
-    {
+    fn count_neighbours(&self, looking_for: CellState, x: u32, y: u32) -> u32 {
         let mut count: u32 = 0;
         for x_test in x-1..=x+1 {
             for y_test in y-1..=y+1 {
@@ -75,7 +73,6 @@ impl Grid {
     }
 
     pub fn tick(&mut self) {
-
         let mut new_cells = self.cells.clone();
 
         for x in 0..self.width {
