@@ -54,7 +54,6 @@ fn event(app: &App, model: &mut Model, event: Event) {
             {
                 match _key {
                     Key::S => model.grid.pretty_print(),
-                    Key::P => println!("mouse_to_grid: {:?}", mouse_to_grid(app, model)),
 
                     Key::Z => model.paint_current = CellState::Conductor,
                     Key::X => model.paint_current = CellState::Head,
