@@ -104,13 +104,13 @@ impl Grid {
     }
     pub fn get_width(&self) -> u32 { self.width }
     pub fn get_height(&self) -> u32 { self.height }
-    pub fn get_cell(&self, x: i32, y: i32) -> CellState {
+    pub fn get_cell(&self, x: i32, y: i32) -> &CellState {
         if x >= self.width as i32 || y >= self.height as i32
         || x < 0 || y < 0 {
-            return CellState::Empty;
+            return &CellState::Empty;
         }
 
-        self.cells[self.idx(x as u32, y as u32)].clone()
+        &self.cells[self.idx(x as u32, y as u32)]
     }
     pub fn set_cell(&mut self, x: u32, y: u32, new_val: CellState) {
 
@@ -129,7 +129,7 @@ impl Grid {
         let y:i32 = y as i32;
         for x_test in x-1..=x+1 {
             for y_test in y-1..=y+1 {
-                if self.get_cell(x_test, y_test) == looking_for {
+                if *self.get_cell(x_test, y_test) == looking_for {
                     count +=1;
                 }
             }
@@ -142,20 +142,19 @@ impl Grid {
 
         for x in 0..self.width {
             for y in 0..self.height {
-                let mut cell = self.get_cell(x as i32, y as i32);
-                match cell
+                let cell: CellState;
+                match self.get_cell(x as i32, y as i32)
                 {
-                    CellState::Empty => {}
-                    CellState::Head => {
-                        cell = CellState::Tail;
-                    }
-                    CellState::Tail => {
-                        cell = CellState::Conductor;
-                    }
+                    CellState::Empty => { cell = CellState::Empty}
+                    CellState::Head => { cell = CellState::Tail }
+                    CellState::Tail => { cell = CellState::Conductor }
                     CellState::Conductor => {
                         let head_count = self.count_neighbours(CellState::Head, x, y);
                         if head_count == 1 || head_count == 2 {
                             cell = CellState::Head;
+                        }
+                        else {
+                            cell = CellState::Conductor;
                         }
                     }
                 }

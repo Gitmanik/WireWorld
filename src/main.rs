@@ -96,7 +96,7 @@ fn mouse_to_grid(app: &App, model: &Model) -> (u32, u32) {
     (clicked_x, clicked_y)
 }
 
-fn cell_to_color(cell: CellState) -> Srgb<u8> {
+fn cell_to_color(cell: &CellState) -> Srgb<u8> {
     match cell {
         CellState::Empty => BLACK,
         CellState::Head => BLUE,
@@ -126,7 +126,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
             if mouse_grid_pos.0 == x && mouse_grid_pos.1 == y {
 
-                draw.rect().no_fill().stroke(cell_to_color(model.paint_current.clone())).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+                draw.rect().no_fill().stroke(cell_to_color(&model.paint_current)).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
             }
         }
     }
