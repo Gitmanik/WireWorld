@@ -47,7 +47,7 @@ impl Grid {
             return CellState::Empty;
         }
 
-        self.cells[self.idx(x, y) as usize].clone()
+        self.cells[self.idx(x, y)].clone()
     }
     pub fn set_cell(&mut self, x: u32, y: u32, new_val: CellState) {
 
