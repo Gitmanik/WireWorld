@@ -8,6 +8,7 @@ struct Model {
     update_last_millis: u128,
     update_every_millis: u128,
     paint_current: CellState,
+    is_paused: bool
 }
 
 fn model(app: &App) -> Model {
@@ -30,6 +31,7 @@ fn model(app: &App) -> Model {
         update_last_millis: 0,
         update_every_millis: 100,
         paint_current: CellState::Conductor,
+        is_paused: false
     }
 }
 
@@ -66,6 +68,7 @@ fn event(app: &App, model: &mut Model, event: Event) {
                     Key::X => model.paint_current = CellState::Head,
                     Key::C => model.paint_current = CellState::Tail,
                     Key::V => model.paint_current = CellState::Empty,
+                    Key::Space => model.is_paused = !model.is_paused,
                     _ => {}
                 }
             }
@@ -78,6 +81,9 @@ fn event(app: &App, model: &mut Model, event: Event) {
             _ => { }
         }
     } else if let Event::Update(update_event) = event {
+        if model.is_paused {
+            return;
+        }
         if update_event.since_start.as_millis() - model.update_last_millis > model.update_every_millis
         {
             model.update_last_millis = update_event.since_start.as_millis();
@@ -122,6 +128,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 draw.rect().no_fill().stroke(Grid::cell_to_color(&model.paint_current)).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
             }
         }
+    }
+
+    if model.is_paused {
+        draw.text("Pause").font_size(30).align_text_middle_y();
     }
 
     draw.to_frame(app, &frame).unwrap();
