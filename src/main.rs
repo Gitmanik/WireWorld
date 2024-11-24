@@ -40,13 +40,13 @@ fn event(app: &App, model: &mut Model, event: Event) {
         let window_event_unwrapped = window_event.unwrap();
         match window_event_unwrapped {
             WindowEvent::MousePressed(MouseButton::Left) => {
-                let mouse_grid_pos = mouse_to_grid(&app, &model);
+                let mouse_grid_pos = mouse_to_grid(app, model);
                 model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
             }
             WindowEvent::MouseMoved(_) =>
             {
                 if app.mouse.buttons.left().is_down(){
-                    let mouse_grid_pos = mouse_to_grid(&app, &model);
+                    let mouse_grid_pos = mouse_to_grid(app, model);
                     model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
                 }
             }
@@ -106,7 +106,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
-    let mouse_grid_pos = mouse_to_grid(&app, &model);
+    let mouse_grid_pos = mouse_to_grid(app, model);
 
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {

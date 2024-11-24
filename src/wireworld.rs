@@ -1,5 +1,4 @@
 use core::fmt;
-use std::fmt::format;
 use std::fs;
 
 #[derive(Clone, PartialEq)]
@@ -92,7 +91,7 @@ impl Grid {
             for x in 0..self.width {
                 serialized.push_str(format!("{}", self.get_cell(x as i32,y as i32)).as_str());
             }
-            serialized.push_str("\n");
+            serialized.push('\n');
         }
 
         serialized
