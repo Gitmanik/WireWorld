@@ -45,9 +45,9 @@ fn event(app: &App, model: &mut Model, event: Event) {
         if window_event.is_none() { return }
         let window_event_unwrapped = window_event.unwrap();
         match window_event_unwrapped {
-            WindowEvent::MousePressed(button) =>
+            WindowEvent::MouseMoved(_) =>
             {
-                if button == MouseButton::Left {
+                if app.mouse.buttons.left().is_down(){
                     let mouse_grid_pos = mouse_to_grid(&app, &model);
                     model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, CellState::Conductor);
                 }
