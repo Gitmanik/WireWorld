@@ -1,4 +1,5 @@
 use core::fmt;
+use std::fmt::format;
 use std::fs;
 
 #[derive(Clone, PartialEq)]
@@ -78,13 +79,26 @@ impl Grid {
         })
     }
 
-    pub fn pretty_print(&self) {
+    pub fn to_file(&self, file_path: &str) -> std::io::Result<()>
+    {
+        let data:String = self.serialize();
+        fs::write(file_path, data)
+    }
+
+    pub fn serialize(&self) -> String {
+        let mut serialized: String = String::new();
+
         for y in 0..self.height {
             for x in 0..self.width {
-                print!("{}", self.get_cell(x as i32,y as i32));
+                serialized.push_str(format!("{}", self.get_cell(x as i32,y as i32)).as_str());
             }
-            println!();
+            serialized.push_str("\n");
         }
+
+        serialized
+    }
+    pub fn pretty_print(&self) {
+        println!("{}", self.serialize());
     }
     pub fn get_width(&self) -> u32 { self.width }
     pub fn get_height(&self) -> u32 { self.height }
