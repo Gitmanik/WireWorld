@@ -44,7 +44,6 @@ fn event(app: &App, model: &mut Model, event: Event) {
                     model.grid.set_cell(mouse_grid_pos.0, mouse_grid_pos.1, model.paint_current.clone());
                 }
             }
-            _ => { }
             WindowEvent::KeyReleased(_key) =>
             {
                 match _key {
@@ -55,6 +54,7 @@ fn event(app: &App, model: &mut Model, event: Event) {
                     _ => {}
                 }
             }
+            _ => { }
         }
     } else if let Event::Update(update_event) = event {
         if update_event.since_start.as_millis() - model.update_last_millis > model.update_every_millis
