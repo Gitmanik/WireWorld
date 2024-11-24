@@ -10,7 +10,16 @@ struct Model {
     paint_current: CellState,
 }
 
-fn model(_app: &App) -> Model {
+fn model(app: &App) -> Model {
+
+    app.new_window()
+        .title("WireWorld")
+        .size(1024, 1024)
+        .view(view)
+        .build()
+        .unwrap();
+
+    app.set_loop_mode(LoopMode::rate_fps(60.0));
 
     let mut grid = wireworld::Grid::from_file("grid.txt");
     if grid.is_err() {
@@ -30,8 +39,6 @@ fn main() {
 
     nannou::app(model)
         .event(event)
-        .simple_window(view)
-        .size(1024, 1024)
         .run();
 }
 fn event(app: &App, model: &mut Model, event: Event) {
