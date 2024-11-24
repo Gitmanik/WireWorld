@@ -11,12 +11,18 @@ struct Model {
 }
 
 fn model(_app: &App) -> Model {
+
+    let mut grid = wireworld::Grid::from_file("grid.txt");
+    if grid.is_err() {
+        grid = Ok(wireworld::Grid::new(50, 50));
+    }
+
     Model {
-        grid: wireworld::Grid::from_file("grid.txt"),
+        grid: grid.unwrap(),
         update_last_millis: 0,
         update_every_millis: 100,
         paint_current: CellState::Conductor,
-        }
+    }
 }
 
 fn main() {

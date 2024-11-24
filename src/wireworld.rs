@@ -26,7 +26,7 @@ pub struct Grid {
 }
 
 impl Grid {
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: u32, height: u32) -> Grid {
         Grid {
             cells: vec![CellState::Empty; (width * height) as usize],
             width: width,
@@ -34,11 +34,11 @@ impl Grid {
         }
     }
 
-    pub fn from_file(file_path: &str) -> Self {
+    pub fn from_file(file_path: &str) -> Result<Grid, &str> {
         let content = fs::read_to_string(file_path);
         if content.is_err() {
             eprintln!("Could not read file: {}", file_path);
-            return Self::new(10,10);
+            return Err("Could not read file");
         }
 
         let content = content.unwrap();
@@ -63,18 +63,17 @@ impl Grid {
             }
             if width != -1 && new_width != width {
                 eprintln!("File {} is malformed.", file_path);
-                return Self::new(10,10);
+                return Err("File is malformed.");
             }
             width = new_width;
             height += 1;
         }
 
-
-        Grid {
+        Ok(Grid {
             cells: cells,
             width: width as u32,
             height: height,
-        }
+        })
     }
 
     pub fn pretty_print(&self) {
