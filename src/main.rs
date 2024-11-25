@@ -108,25 +108,31 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.background().color(BLACK);
 
+    let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
+    let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
+
     let mouse_grid_pos = mouse_to_grid(app, model);
+
+    let paint_color: Srgb<u8> = Grid::cell_to_color(&model.paint_current);
 
     for y in 0..model.grid.get_height() {
         for x in 0..model.grid.get_width() {
 
-            let color: Srgb<u8> = Grid::cell_to_color(model.grid.get_cell(x as i32, y as i32));
-
-            let cell_width = app.window_rect().w() / model.grid.get_width() as f32;
-            let cell_height = app.window_rect().h() / model.grid.get_height() as f32;
-
             let cell_x = app.window_rect().left() + cell_width * x as f32 + cell_width/2.0;
             let cell_y = app.window_rect().top() - cell_height * (y+1) as f32 + cell_height/2.0;
 
-            draw.rect().color(color).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
-
             if mouse_grid_pos.0 == x && mouse_grid_pos.1 == y {
-
-                draw.rect().no_fill().stroke(Grid::cell_to_color(&model.paint_current)).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
+                draw.rect().no_fill().stroke(paint_color).stroke_weight(3.0).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
             }
+
+            let cell: &CellState = model.grid.get_cell(x as i32, y as i32);
+
+            if *cell == CellState::Empty {
+                continue;
+            }
+
+            let color: Srgb<u8> = Grid::cell_to_color(cell);
+            draw.rect().color(color).w(cell_width).h(cell_height).x(cell_x).y(cell_y);
         }
     }
 
