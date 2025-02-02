@@ -1,32 +1,41 @@
 # WireWorld
 
-Implementacja automatu komórkowego [WireWorld](https://en.wikipedia.org/wiki/Wireworld) w języku Rust
+A Rust implementation of the [Wireworld](https://en.wikipedia.org/wiki/Wireworld) cellular automaton. Wireworld is a simple but powerful model often used to simulate digital logic circuits in a 2D grid.
 
-### Obsługa
-Program podczas startu próbuje wczytać plik __grid.txt__ zawierający 
-stan gry. W przypadku braku lub błędnego pliku generowana jest pusta macierz 50x50.
+## Overview
 
-Po najechaniu myszką w okno gry zostanie pokazana komórka, w której po kliknięciu __lewym przyciskiem myszy__ 
-zostanie ustalony stan według aktualnego wyboru.
+On startup, the program attempts to load the initial grid configuration from a file called **grid.txt**. If this file is missing or invalid, the program will create a blank 50×50 grid.
 
-Można również przeciągnąć plik w okno gry - zostanie załadowana jego zawartość.
+The simulation opens in a window. You can hover your mouse over any cell, and clicking the **left mouse button** will change that cell to the currently selected drawing state (e.g., Conductor, Head, Tail, or Empty). You can also drag and drop a file directly into the window to load its contents as the new grid state.
 
-### Klawisze
-* __Z__ - malowanie Przewodnika
-* __X__ - malowanie Głowy
-* __C__ - malowanie Ogona
-* __V__ - malowanie Pustki
-* __P__ - drukowanie aktualnego stanu gry do konsoli
-* __S__ - zapisanie aktualnego stanu gry do pliku __current.txt__
-* __Spacja__ - Pauzowanie gry
+## Controls
 
+- **Z** – Paint cell as **Conductor**  
+- **X** – Paint cell as **Electron Head**  
+- **C** – Paint cell as **Electron Tail**  
+- **V** – Paint cell as **Empty**  
+- **P** – Print the current grid state to the console  
+- **S** – Save the current grid state to a file **current.txt**  
+- **Spacebar** – Pause or unpause the simulation  
 
-#### Struktura pliku grid.txt
-Plik składa się z WxH znaków określających stan komórki w danej pozycji macierzy
-* __.__ - pusta przestzeń
-* __\>__ - Głowa
-* __\<__ - Ogon
-* __-__ - Przewodnik
+## File Format (`grid.txt`)
 
-### Wykorzystane biblioteki
+The file must contain exactly **W×H** characters (where `W` is the grid width and `H` is the grid height). Each character corresponds to a single cell’s state:
+
+- **`.`** (dot) – Empty space  
+- **`>`** (greater-than sign) – Electron Head  
+- **`<`** (less-than sign) – Electron Tail  
+- **`-`** (hyphen) – Conductor  
+
+If the file is missing or contains invalid characters, the program defaults to a blank 50×50 grid.
+
+## How to Run
+
+1. Clone or download the repository.  
+2. Make sure you have [Rust](https://www.rust-lang.org/tools/install) installed.  
+3. Open a terminal in the project directory.  
+4. Run the application with:
+   ```bash
+   cargo run --release
+### Used libraries
 * Nannou 0.19.0 [GitHub](https://github.com/nannou-org/nannou)
