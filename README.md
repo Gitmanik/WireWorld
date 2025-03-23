@@ -1,7 +1,7 @@
-# WireWorld
+# WireWorld, try this app [here!](https://gitmanik.dev/wireworld)
 
 A Rust implementation of the [Wireworld](https://en.wikipedia.org/wiki/Wireworld) cellular automaton. Wireworld is a simple but powerful model often used to simulate digital logic circuits in a 2D grid.
-
+![Screenshot](Screenshot.png)
 ## Overview
 
 On startup, the program attempts to load the initial grid configuration from a file called **grid.txt**. If this file is missing or invalid, the program will create a blank 50×50 grid.
@@ -37,5 +37,12 @@ If the file is missing or contains invalid characters, the program defaults to a
 4. Run the application with:
    ```bash
    cargo run --release
+5. Or, if you want to build WASM
+```bash
+cargo build --target wasm32-unknown-unknown --release
+wasm-bindgen --target web --no-typescript --out-dir ./web ./target/wasm32-unknown-unknown/release/WireWorld.wasm
+```
+
 ### Used libraries
-* Nannou 0.19.0 [GitHub](https://github.com/nannou-org/nannou)
+* Nannou
+* wasm-bindgen

@@ -35,17 +35,8 @@ impl Grid {
         }
     }
 
-    pub fn from_file(file_path: &str) -> Result<Grid, &str> {
-
-        println!("Loading from from file: {}", file_path);
-        let content = fs::read_to_string(file_path);
-        if content.is_err() {
-            eprintln!("Could not read file: {}", file_path);
-            return Err("Could not read file");
-        }
-
-        let content = content.unwrap();
-        let lines = content.split('\n');
+    pub fn from_text(text: String) -> Grid {
+        let lines = text.split('\n');
 
         let mut cells: Vec<CellState> = Vec::new();
         let mut width :i32 = -1;
@@ -65,21 +56,35 @@ impl Grid {
                 new_width += 1;
             }
             if width != -1 && new_width != width {
-                eprintln!("File {} is malformed.", file_path);
-                return Err("File is malformed.");
+                eprintln!("File is malformed.");
+                panic!("File is malformed.");
             }
             width = new_width;
             height += 1;
         }
 
-        println!("Finished loading {}x{} grid from file {}", width, height, file_path);
-        
-        Ok(Grid {
+        println!("Finished loading {}x{} grid", width, height);
+
+        Grid {
             cells: cells,
             width: width as u32,
             height: height,
-        })
+        }
     }
+
+    pub fn from_file(file_path: &str) -> Result<Grid, &str> {
+
+        println!("Loading from from file: {}", file_path);
+        let content = fs::read_to_string(file_path);
+        if content.is_err() {
+            eprintln!("Could not read file: {}", file_path);
+            return Err("Could not read file");
+        }
+
+        let content = content.unwrap();
+        Ok(Grid::from_text(content))
+    }
+
 
     pub fn to_file(&self, file_path: &str) -> std::io::Result<()>
     {

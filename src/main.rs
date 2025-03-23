@@ -3,31 +3,71 @@ use crate::wireworld::*;
 
 use nannou::prelude::*;
 
+use wasm_bindgen::prelude::wasm_bindgen;
+
+use std::cell::RefCell;
+use async_std::task::block_on;
+
+use nannou::wgpu::{Backends, DeviceDescriptor, Limits};
+use wasm_bindgen::{throw_str, JsCast, JsValue};
+use wasm_bindgen_futures::JsFuture;
+use web_sys::{Request, RequestInit, RequestMode, Response};
+
+#[wasm_bindgen]
+pub async fn main_web() {
+    #[cfg(debug_assertions)]
+    console_error_panic_hook::set_once();
+
+    block_on(async {
+        let model = get_model().await;
+        run_app(model).await;
+    });
+}
+pub fn main() {
+    block_on(async {
+        let model = get_model().await;
+        run_app(model).await;
+    });
+}
+
+
 struct Model {
-    grid: wireworld::Grid,
+    grid: Grid,
     update_last_millis: u128,
     update_every_millis: u128,
     paint_current: CellState,
     is_paused: bool
 }
 
-fn model(app: &App) -> Model {
-    app.new_window()
-        .title("WireWorld")
-        .size(1024, 1024)
-        .view(view)
-        .build()
-        .unwrap();
+#[wasm_bindgen]
+pub async fn fetch_file_content(url: &str) -> Result<String, JsValue> {
+    let mut opts = RequestInit::new();
+    opts.method("GET");
+    opts.mode(RequestMode::Cors);
 
-    app.set_loop_mode(LoopMode::rate_fps(60.0));
+    let request = Request::new_with_str_and_init(url, &opts)?;
 
-    let mut grid = wireworld::Grid::from_file("grid.txt");
-    if grid.is_err() {
-        grid = Ok(wireworld::Grid::new(50, 50));
+    let window = web_sys::window().unwrap();
+    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
+    let resp: Response = resp_value.dyn_into()?;
+
+    let text = JsFuture::from(resp.text()?).await?;
+    Ok(text.as_string().unwrap())
+}
+
+async fn get_model() -> Model {
+    let mut grid;
+    #[cfg(target_arch = "wasm32")]
+    {
+        grid = Grid::from_text(fetch_file_content("./grid.txt").await.unwrap())
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        grid = Grid::from_file("grid.txt").unwrap();
     }
 
     Model {
-        grid: grid.unwrap(),
+        grid: grid,
         update_last_millis: 0,
         update_every_millis: 100,
         paint_current: CellState::Conductor,
@@ -35,12 +75,42 @@ fn model(app: &App) -> Model {
     }
 }
 
-fn main() {
-    println!("WireWorld - Paweł Reich s193682 2024");
+async fn create_window(app: &App) {
+    let device_desc = DeviceDescriptor {
+        limits: Limits {
+            max_texture_dimension_2d: 8192,
+            ..Limits::downlevel_webgl2_defaults()
+        },
+        ..Default::default()
+    };
 
-    nannou::app(model)
-        .event(event)
-        .run();
+    app.new_window()
+        .device_descriptor(device_desc)
+        .title("WireWorld")
+        .view(view)
+        .build_async()
+        .await
+        .unwrap();
+}
+
+async fn run_app(model: Model) {
+    block_on(async {
+        thread_local!(static MODEL: RefCell<Option<Model>> = Default::default());
+        MODEL.with(|m| m.borrow_mut().replace(model));
+
+        app::Builder::new_async(|app| {
+            Box::new(async move {
+                create_window(app).await;
+                MODEL.with(|m| m.borrow_mut().take().unwrap())
+            })
+        })
+            .size(1024, 1024)
+            .backends(Backends::PRIMARY | Backends::GL)
+            .event(event)
+            .run_async()
+            .await;
+    })
+
 }
 
 fn event(app: &App, model: &mut Model, event: Event) {
@@ -73,7 +143,7 @@ fn event(app: &App, model: &mut Model, event: Event) {
                 }
             }
             WindowEvent::DroppedFile(path) => {
-                let new_grid = wireworld::Grid::from_file(path.to_str().unwrap());
+                let new_grid = Grid::from_file(path.to_str().unwrap());
                 if new_grid.is_ok() {
                     model.grid = new_grid.unwrap();
                 }

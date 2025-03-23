@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WireWorld</title>
+  <style>
+    body { margin: 0; overflow: hidden; text-align:center}
+    canvas { display: inline; }
+    
+  </style>
+</head>
+<body>
+      <h1>WireWorld by Gitmanik</h1>
+  <script>
+    if (!navigator.gpu) {
+      await import('https://unpkg.com/@webgpu/types@0.1.13/dist/index.js');
+      await import('https://cdn.jsdelivr.net/npm/@webgpu/webgpu-polyfill@1.0.1/dist/webgpu-polyfill.js');
+    }
+    </script>
+  <script type="module">
+    import init from './WireWorld.js';
+    
+    async function run() {
+      await init();
+    }
+    
+    run();
+  </script>
+</body>
+</html>
